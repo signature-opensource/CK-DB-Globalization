@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CK.Cris.Engine" Version="0.39.2" />
+    <PackageReference Include="CK.Poco.Exc.Json.Engine" Version="30.0.0" />
+    <PackageReference Include="CK.TypeScript.Engine" Version="0.26.2" />
+
+    <PackageReference Include="CK.DB.Tests.NUnit" Version="30.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" PrivateAssets="all" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CK.DB.Globalization\CK.DB.Globalization.csproj" />
+  </ItemGroup>
+
+</Project>
