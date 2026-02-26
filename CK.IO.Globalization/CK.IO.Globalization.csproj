@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CK.IO.Auth" Version="0.41.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.2.39" />
+    </ItemGroup>
+    
+</Project>

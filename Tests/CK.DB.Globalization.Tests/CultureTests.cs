@@ -5,6 +5,7 @@ using Dapper;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -42,7 +43,7 @@ public class CultureTests
     [TestCase( "st-ls,sl-si" )]
     public async Task register_extended_culture_Async( string names )
     {
-        var cultureTable = SharedEngine.Map.StObjs.Obtain<CultureTable>();
+        var cultureTable = SharedEngine.Map.StObjs.Obtain<CultureTable>()!;
 
         using var ctx = new SqlStandardCallContext();
         var culture = ExtendedCultureInfo.EnsureExtendedCultureInfo( names );
@@ -60,5 +61,72 @@ public class CultureTests
                 isCulturedRegistered.ShouldBe( true );
             }
         }
+    }
+
+    [Test]
+    public async Task destroy_culture_removes_it_from_database_Async()
+    {
+        var cultureTable = SharedEngine.Map.StObjs.Obtain<CultureTable>()!;
+
+        using var ctx = new SqlStandardCallContext();
+        var culture = NormalizedCultureInfo.EnsureNormalizedCultureInfo( "bs" );
+
+        await cultureTable.RegisterAsync( ctx, culture );
+        (await cultureTable.IsCultureRegisteredAsync( ctx, culture.Id )).ShouldBe( true );
+
+        await cultureTable.DestroyAsync( ctx, culture.Id );
+        (await cultureTable.IsCultureRegisteredAsync( ctx, culture.Id )).ShouldBe( false );
+    }
+
+    [Test]
+    public async Task destroy_culture_removes_all_children_Async()
+    {
+        var cultureTable = SharedEngine.Map.StObjs.Obtain<CultureTable>()!;
+
+        using var ctx = new SqlStandardCallContext();
+        var parent = NormalizedCultureInfo.EnsureNormalizedCultureInfo( "sr" );
+        var child = NormalizedCultureInfo.EnsureNormalizedCultureInfo( "sr-Latn" );
+        var grandChild = NormalizedCultureInfo.EnsureNormalizedCultureInfo( "sr-Latn-RS" );
+
+        await cultureTable.RegisterAsync( ctx, grandChild );
+        (await cultureTable.IsCultureRegisteredAsync( ctx, parent.Id )).ShouldBe( true );
+        (await cultureTable.IsCultureRegisteredAsync( ctx, child.Id )).ShouldBe( true );
+        (await cultureTable.IsCultureRegisteredAsync( ctx, grandChild.Id )).ShouldBe( true );
+
+        await cultureTable.DestroyAsync( ctx, parent.Id );
+        (await cultureTable.IsCultureRegisteredAsync( ctx, parent.Id )).ShouldBe( false );
+        (await cultureTable.IsCultureRegisteredAsync( ctx, child.Id )).ShouldBe( false );
+        (await cultureTable.IsCultureRegisteredAsync( ctx, grandChild.Id )).ShouldBe( false );
+    }
+
+    [Test]
+    public async Task destroy_english_culture_throws_Async()
+    {
+        var cultureTable = SharedEngine.Map.StObjs.Obtain<CultureTable>()!;
+
+        using var ctx = new SqlStandardCallContext();
+        var en = NormalizedCultureInfo.EnsureNormalizedCultureInfo( "en" );
+
+        Assert.ThrowsAsync<SqlDetailedException>( async () => await cultureTable.DestroyAsync( ctx, en.Id ) );
+    }
+
+    [Test]
+    public async Task destroy_culture_0_throws_Async()
+    {
+        var cultureTable = SharedEngine.Map.StObjs.Obtain<CultureTable>()!;
+
+        using var ctx = new SqlStandardCallContext();
+
+        Assert.ThrowsAsync<SqlDetailedException> ( async () => await cultureTable.DestroyAsync( ctx, 0 ) );
+    }
+
+    [Test]
+    public async Task destroy_nonexistent_culture_throws_Async()
+    {
+        var cultureTable = SharedEngine.Map.StObjs.Obtain<CultureTable>()!;
+
+        using var ctx = new SqlStandardCallContext();
+
+        Assert.ThrowsAsync<SqlDetailedException>( async () => await cultureTable.DestroyAsync( ctx, -999 ) );
     }
 }

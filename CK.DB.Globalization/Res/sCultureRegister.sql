@@ -6,7 +6,7 @@ create procedure CK.sCultureRegister
 (
 	@CultureId int,
 	@Name varchar(20),
-	@FullName varchar(20),
+	@FullName varchar(512),
 	@EnglishName nvarchar(255),
 	@NativeName nvarchar(255),
 	@DisplayName nvarchar(255),

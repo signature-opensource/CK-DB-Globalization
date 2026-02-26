@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D6D069BF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CK.DB.Globalization.Tests", "Tests\CK.DB.Globalization.Tests\CK.DB.Globalization.Tests.csproj", "{B854AF47-6234-298B-D6AD-CF73892DB8AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CK.IO.Globalization", "CK.IO.Globalization\CK.IO.Globalization.csproj", "{BF285CCA-D006-4B36-B99A-392817148E04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{B854AF47-6234-298B-D6AD-CF73892DB8AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B854AF47-6234-298B-D6AD-CF73892DB8AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B854AF47-6234-298B-D6AD-CF73892DB8AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF285CCA-D006-4B36-B99A-392817148E04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF285CCA-D006-4B36-B99A-392817148E04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF285CCA-D006-4B36-B99A-392817148E04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF285CCA-D006-4B36-B99A-392817148E04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

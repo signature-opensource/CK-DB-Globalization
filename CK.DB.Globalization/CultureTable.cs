@@ -1,6 +1,9 @@
 using CK.Core;
+using CK.IO.Globalization;
 using CK.SqlServer;
 using Dapper;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CK.DB.Globalization;
@@ -70,11 +73,59 @@ public abstract class CultureTable : SqlTable
      );
 
 
+    /// <summary>
+    /// Destroys a culture and all its children recursively.
+    /// The English culture ("en") cannot be destroyed.
+    /// </summary>
+    /// <param name="ctx">The call context.</param>
+    /// <param name="cultureId">The culture identifier to destroy.</param>
+    /// <returns>The awaitable.</returns>
+    [SqlProcedure( "sCultureDestroy" )]
+    public abstract Task DestroyAsync( ISqlCallContext ctx, int cultureId );
+
     public async Task<bool> IsCultureRegisteredAsync( ISqlCallContext ctx, int cultureId )
     => await ctx.GetConnectionController( this ).QuerySingleOrDefaultAsync<bool>(
             @"select 1
-              from CK.tCulture 
+              from CK.tCulture
               where CultureId = @CultureId;",
             new { CultureId = cultureId } );
+
+    public async Task<ICulture?> GetCultureAsync( ISqlCallContext ctx, int cultureId )
+    => await ctx.GetConnectionController( this ).QuerySingleOrDefaultAsync<ICulture>(
+            @"select CultureId, Name, FullName, EnglishName, NativeName, DisplayName, IsNormalized, ParentCultureId
+              from CK.tCulture
+              where CultureId = @CultureId;",
+            new { CultureId = cultureId } );
+
+    public async Task<IReadOnlyList<ICulture>> GetAllCulturesAsync( ISqlCallContext ctx )
+    {
+        var results = await ctx.GetConnectionController( this ).QueryAsync<ICulture>(
+            @"select CultureId, Name, FullName, EnglishName, NativeName, DisplayName, IsNormalized, ParentCultureId
+              from CK.tCulture
+              where CultureId != 0;" );
+        return results.ToList();
+    }
+
+    public async Task<IReadOnlyList<ICulture>> GetCultureHierarchyAsync( ISqlCallContext ctx, int cultureId )
+    {
+        var results = await ctx.GetConnectionController( this ).QueryAsync<ICulture>(
+            @";with Hierarchy as
+              (
+                  select CultureId, Name, FullName, EnglishName, NativeName, DisplayName, IsNormalized, ParentCultureId
+                  from CK.tCulture
+                  where CultureId = @CultureId
+
+                  union all
+
+                  select p.CultureId, p.Name, p.FullName, p.EnglishName, p.NativeName, p.DisplayName, p.IsNormalized, p.ParentCultureId
+                  from CK.tCulture p
+                  inner join Hierarchy h on p.CultureId = h.ParentCultureId
+                  where p.CultureId != 0
+              )
+              select CultureId, Name, FullName, EnglishName, NativeName, DisplayName, IsNormalized, ParentCultureId
+              from Hierarchy;",
+            new { CultureId = cultureId } );
+        return results.ToList();
+    }
 
 }

@@ -1,3 +1,5 @@
+
+
 --[beginscript]
 
 create table CK.tCulture
@@ -14,6 +16,9 @@ create table CK.tCulture
     constraint PK_CK_tCulture primary key( CultureId ),
     constraint FK_CK_tCulture_ParentCultureId foreign key( ParentCultureId ) references CK.tCulture( CultureId ),
 );
+
+create index IX_CK_tCulture_Name on CK.tCulture( Name );
+create index IX_CK_tCulture_ParentCultureId on CK.tCulture( ParentCultureId );
 
 
 insert into CK.tCulture( CultureId, Name, FullName, EnglishName, NativeName, DisplayName, IsNormalized, ParentCultureId  )
