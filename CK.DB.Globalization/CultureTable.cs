@@ -1,5 +1,7 @@
 using CK.Core;
+using CK.Cris;
 using CK.IO.Globalization;
+using CK.IO.Globalization.Commands;
 using CK.SqlServer;
 using Dapper;
 using System.Collections.Generic;
@@ -83,6 +85,8 @@ public abstract class CultureTable : SqlTable
     [SqlProcedure( "sCultureDestroy" )]
     public abstract Task DestroyAsync( ISqlCallContext ctx, int cultureId );
 
+
+
     public async Task<bool> IsCultureRegisteredAsync( ISqlCallContext ctx, int cultureId )
     => await ctx.GetConnectionController( this ).QuerySingleOrDefaultAsync<bool>(
             @"select 1
@@ -122,4 +126,24 @@ public abstract class CultureTable : SqlTable
               from Hierarchy;",
             new { CultureId = cultureId } );
 
+
+    [CommandHandler]
+    public async Task<ICulture?> GetCultureAsync( ISqlCallContext ctx, IGetCultureQCommand cmd, CultureTable cultureTable )
+    {
+        return await cultureTable.GetCultureAsync( ctx, cmd.CultureId );
+    }
+
+    [CommandHandler]
+    public async Task<List<ICulture>> GetAllCulturesAsync( ISqlCallContext ctx, IGetAllCulturesQCommand cmd, CultureTable cultureTable )
+    {
+        var results = await cultureTable.GetAllCulturesAsync( ctx );
+        return results.ToList();
+    }
+
+    [CommandHandler]
+    public async Task<List<ICulture>> GetCultureHierarchyAsync( ISqlCallContext ctx, IGetCultureHierarchyQCommand cmd, CultureTable cultureTable )
+    {
+        var results = await cultureTable.GetCultureHierarchyAsync( ctx, cmd.CultureId );
+        return results.ToList();
+    }
 }
