@@ -97,18 +97,14 @@ public abstract class CultureTable : SqlTable
               where CultureId = @CultureId;",
             new { CultureId = cultureId } );
 
-    public async Task<IReadOnlyList<ICulture>> GetAllCulturesAsync( ISqlCallContext ctx )
-    {
-        var results = await ctx.GetConnectionController( this ).QueryAsync<ICulture>(
+    public async Task<IEnumerable<ICulture>> GetAllCulturesAsync( ISqlCallContext ctx )
+    =>await ctx.GetConnectionController( this ).QueryAsync<ICulture>(
             @"select CultureId, Name, FullName, EnglishName, NativeName, DisplayName, IsNormalized, ParentCultureId
               from CK.tCulture
               where CultureId != 0;" );
-        return results.ToList();
-    }
 
-    public async Task<IReadOnlyList<ICulture>> GetCultureHierarchyAsync( ISqlCallContext ctx, int cultureId )
-    {
-        var results = await ctx.GetConnectionController( this ).QueryAsync<ICulture>(
+    public async Task<IEnumerable<ICulture>> GetCultureHierarchyAsync( ISqlCallContext ctx, int cultureId )
+    => await ctx.GetConnectionController( this ).QueryAsync<ICulture>(
             @";with Hierarchy as
               (
                   select CultureId, Name, FullName, EnglishName, NativeName, DisplayName, IsNormalized, ParentCultureId
@@ -125,7 +121,5 @@ public abstract class CultureTable : SqlTable
               select CultureId, Name, FullName, EnglishName, NativeName, DisplayName, IsNormalized, ParentCultureId
               from Hierarchy;",
             new { CultureId = cultureId } );
-        return results.ToList();
-    }
 
 }
