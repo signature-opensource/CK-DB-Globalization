@@ -10,8 +10,4 @@
         <PackageReference Include="CK.IO.Auth" Version="0.43.0" />
     </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.2.39" />
-    </ItemGroup>
-    
 </Project>
