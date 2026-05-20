@@ -12,21 +12,24 @@ namespace CK.DB.Globalization;
 
 [SqlTable( "tCulture", Package = typeof( Package ), ResourcePath = "Res" )]
 [Versions( "1.0.0" )]
+[SqlObjectItem( "vCulture" )]
 public abstract class CultureTable : SqlTable
 {
-    void StObjConstruct()
+    ExtendedCultureTable _extendedCultureTable = null!;
+
+    void StObjConstruct( ExtendedCultureTable extendedCultureTable )
     {
+        _extendedCultureTable = extendedCultureTable;
     }
 
     /// <summary>
-    /// Create an culture.
+    /// Registers a culture: dispatches between the normalized path (insert in <c>tCulture</c>+<c>tExtendedCulture</c>)
+    /// and the pure extended path (insert in <c>tExtendedCulture</c> only) based on the runtime type.
+    /// Idempotent: if the culture is already registered nothing happens.
     /// </summary>
-    /// <param name="ctx">The call context.</param>
-    /// <param name="extendedCultureInfo">The extended culture info <see cref="ExtendedCultureInfo"/> .</param>
-    /// <returns>The awaitable.</returns>
     public async Task RegisterAsync( ISqlCallContext ctx, ExtendedCultureInfo extendedCultureInfo )
     {
-        if( await IsCultureRegisteredAsync( ctx, extendedCultureInfo.Id ) )
+        if( await _extendedCultureTable.IsExtendedCultureRegisteredAsync( ctx, extendedCultureInfo.Id ) )
         {
             return;
         }
@@ -39,25 +42,40 @@ public abstract class CultureTable : SqlTable
             }
         }
 
-        NormalizedCultureInfo? parent = null;
-        if( extendedCultureInfo.PrimaryCulture.Culture.Parent.Name != "" )
+        if( extendedCultureInfo is NormalizedCultureInfo norm )
         {
-            parent = NormalizedCultureInfo.EnsureNormalizedCultureInfo( extendedCultureInfo.PrimaryCulture.Culture.Parent.Name );
-            await RegisterAsync( ctx, parent );
+            NormalizedCultureInfo? parent = null;
+            if( norm.Culture.Parent.Name != "" )
+            {
+                parent = NormalizedCultureInfo.EnsureNormalizedCultureInfo( norm.Culture.Parent.Name );
+                await RegisterAsync( ctx, parent );
+            }
+
+            await DoRegisterAsync(
+                ctx,
+                norm.Id,
+                norm.Name,
+                norm.FullName,
+                norm.Culture.EnglishName,
+                norm.Culture.NativeName,
+                norm.Culture.DisplayName,
+                parent?.Id ?? 0
+            );
         }
+        else
+        {
+            // The primary normalized culture must exist in tCulture before sExtendedCultureRegister
+            // validates its PrimaryCultureId. CK.Globalization does not guarantee that PrimaryCulture
+            // is part of Fallbacks (see e.g. "st-ls,sl-si"), so we register it explicitly here.
+            await RegisterAsync( ctx, extendedCultureInfo.PrimaryCulture );
 
-        await DoRegisterAsync(
-            ctx,
-            extendedCultureInfo.Id,
-            extendedCultureInfo.Name,
-            extendedCultureInfo.FullName,
-            extendedCultureInfo.PrimaryCulture.Culture.EnglishName,
-            extendedCultureInfo.PrimaryCulture.Culture.NativeName,
-            extendedCultureInfo.PrimaryCulture.Culture.DisplayName,
-            extendedCultureInfo is NormalizedCultureInfo,
-            parent?.Id
-        );
-
+            await _extendedCultureTable.DoRegisterAsync(
+                ctx,
+                extendedCultureInfo.Id,
+                extendedCultureInfo.FullName,
+                extendedCultureInfo.PrimaryCulture.Id
+            );
+        }
     }
 
     [SqlProcedure( "sCultureRegister" )]
@@ -70,40 +88,36 @@ public abstract class CultureTable : SqlTable
         string englishName,
         string nativeName,
         string displayName,
-        bool isNormalized,
-        int? parentCultureId = null
+        int parentCultureId
      );
 
 
     /// <summary>
-    /// Destroys a culture and all its children recursively.
+    /// Destroys a normalized culture and all its children recursively. Cascades to any pure extended
+    /// culture whose primary culture is being destroyed, and cleans up <c>tCultureFallback</c>.
     /// The English culture ("en") cannot be destroyed.
     /// </summary>
-    /// <param name="ctx">The call context.</param>
-    /// <param name="cultureId">The culture identifier to destroy.</param>
-    /// <returns>The awaitable.</returns>
     [SqlProcedure( "sCultureDestroy" )]
     public abstract Task DestroyAsync( ISqlCallContext ctx, int cultureId );
 
 
-
+    /// <summary>
+    /// Tells whether a culture id is known (covers both normalized and pure extended cultures
+    /// since every registered culture has a row in <c>tExtendedCulture</c>).
+    /// </summary>
     public async Task<bool> IsCultureRegisteredAsync( ISqlCallContext ctx, int cultureId )
-    => await ctx.GetConnectionController( this ).QuerySingleOrDefaultAsync<bool>(
-            @"select 1
-              from CK.tCulture
-              where CultureId = @CultureId;",
-            new { CultureId = cultureId } );
+        => await _extendedCultureTable.IsExtendedCultureRegisteredAsync( ctx, cultureId );
 
     public async Task<ICulture?> GetCultureAsync( ISqlCallContext ctx, int cultureId )
     => await ctx.GetConnectionController( this ).QuerySingleOrDefaultAsync<ICulture>(
-            @"select CultureId, Name, FullName, EnglishName, NativeName, DisplayName, IsNormalized, ParentCultureId
+            @"select CultureId, Name, EnglishName, NativeName, DisplayName, ParentCultureId
               from CK.tCulture
               where CultureId = @CultureId;",
             new { CultureId = cultureId } );
 
     public async Task<IEnumerable<ICulture>> GetAllCulturesAsync( ISqlCallContext ctx )
     =>await ctx.GetConnectionController( this ).QueryAsync<ICulture>(
-            @"select CultureId, Name, FullName, EnglishName, NativeName, DisplayName, IsNormalized, ParentCultureId
+            @"select CultureId, Name, EnglishName, NativeName, DisplayName, ParentCultureId
               from CK.tCulture
               where CultureId != 0;" );
 
@@ -111,18 +125,18 @@ public abstract class CultureTable : SqlTable
     => await ctx.GetConnectionController( this ).QueryAsync<ICulture>(
             @";with Hierarchy as
               (
-                  select CultureId, Name, FullName, EnglishName, NativeName, DisplayName, IsNormalized, ParentCultureId
+                  select CultureId, Name, EnglishName, NativeName, DisplayName, ParentCultureId
                   from CK.tCulture
                   where CultureId = @CultureId
 
                   union all
 
-                  select p.CultureId, p.Name, p.FullName, p.EnglishName, p.NativeName, p.DisplayName, p.IsNormalized, p.ParentCultureId
+                  select p.CultureId, p.Name, p.EnglishName, p.NativeName, p.DisplayName, p.ParentCultureId
                   from CK.tCulture p
                   inner join Hierarchy h on p.CultureId = h.ParentCultureId
                   where p.CultureId != 0
               )
-              select CultureId, Name, FullName, EnglishName, NativeName, DisplayName, IsNormalized, ParentCultureId
+              select CultureId, Name, EnglishName, NativeName, DisplayName, ParentCultureId
               from Hierarchy;",
             new { CultureId = cultureId } );
 

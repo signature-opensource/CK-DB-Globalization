@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.FlowAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Microsoft.Data.SqlClient;
+using Shouldly;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -128,5 +129,48 @@ public class CultureTests
         using var ctx = new SqlStandardCallContext();
 
         Assert.ThrowsAsync<SqlDetailedException>( async () => await cultureTable.DestroyAsync( ctx, -999 ) );
+    }
+
+    [Test]
+    public async Task get_culture_with_unknown_id_returns_null_Async()
+    {
+        var cultureTable = SharedEngine.Map.StObjs.Obtain<CultureTable>()!;
+
+        using var ctx = new SqlStandardCallContext();
+
+        (await cultureTable.GetCultureAsync( ctx, -987654321 )).ShouldBeNull();
+    }
+
+    [Test]
+    public async Task get_extended_culture_with_unknown_id_returns_null_Async()
+    {
+        var extendedCultureTable = SharedEngine.Map.StObjs.Obtain<ExtendedCultureTable>()!;
+
+        using var ctx = new SqlStandardCallContext();
+
+        (await extendedCultureTable.GetExtendedCultureAsync( ctx, -987654321 )).ShouldBeNull();
+    }
+
+    [Test]
+    public async Task destroying_normalized_culture_cascades_to_extended_with_that_primary_Async()
+    {
+        var cultureTable = SharedEngine.Map.StObjs.Obtain<CultureTable>()!;
+        var extendedCultureTable = SharedEngine.Map.StObjs.Obtain<ExtendedCultureTable>()!;
+
+        using var ctx = new SqlStandardCallContext();
+
+        // 'bs' is a non-seed normalized culture.
+        var bs = NormalizedCultureInfo.EnsureNormalizedCultureInfo( "bs" );
+        await cultureTable.RegisterAsync( ctx, bs );
+
+        // Register a pure extended culture whose primary is 'bs'.
+        var extended = ExtendedCultureInfo.EnsureExtendedCultureInfo( "bs,en" );
+        await cultureTable.RegisterAsync( ctx, extended );
+        (await extendedCultureTable.IsExtendedCultureRegisteredAsync( ctx, extended.Id )).ShouldBe( true );
+
+        // Destroying the normalized culture must cascade to the extended cultures whose primary it is.
+        await cultureTable.DestroyAsync( ctx, bs.Id );
+        (await cultureTable.IsCultureRegisteredAsync( ctx, bs.Id )).ShouldBe( false );
+        (await extendedCultureTable.IsExtendedCultureRegisteredAsync( ctx, extended.Id )).ShouldBe( false );
     }
 }

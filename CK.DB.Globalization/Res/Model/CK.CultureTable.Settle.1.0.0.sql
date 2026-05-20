@@ -1,5 +1,6 @@
 --[beginscript]
 
+-- BAZOOKA: legacy LCID -> CultureId remapping for the LCID identifiers.
 -- DE
 exec CKCore.sRefBazookation 'CK','tLCID','LCID','7','223899012',0;
 exec CKCore.sRefBazookation 'CK','tLCID','LCID','4096','-83080978',0;
