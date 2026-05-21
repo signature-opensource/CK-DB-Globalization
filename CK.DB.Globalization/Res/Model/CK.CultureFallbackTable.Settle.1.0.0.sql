@@ -37,4 +37,55 @@ insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 960
 insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 1001731353, 1, -827532471 );
 insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 1001731353, 2, 266826199 );
 
+-- Finalize chains so they match what sCultureRegister produces dynamically: for every
+-- non-zero ExtendedCulture, append English first (if missing), then every other non-zero
+-- normalized Culture not already in the chain (ordered by CultureId for determinism).
+declare @EnId int = 221277614; -- 'en'
+
+-- Step A: append English at the next available Idx for every chain missing it.
+;with NextIdx as
+(
+    select e.ExtendedCultureId,
+           cast( isnull( max(f.Idx), -1 ) + 1 as smallint ) as NextIdx
+    from CK.tExtendedCulture e
+    left join CK.tCultureFallback f on f.CultureId = e.ExtendedCultureId
+    where e.ExtendedCultureId <> 0
+      and not exists (
+          select 1 from CK.tCultureFallback x
+          where x.CultureId = e.ExtendedCultureId and x.FallbackCultureId = @EnId
+      )
+    group by e.ExtendedCultureId
+)
+insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId )
+    select ExtendedCultureId, NextIdx, @EnId from NextIdx;
+
+-- Step B: append every other non-zero normalized Culture missing from each chain,
+-- continuing from the current max(Idx) per ExtendedCulture, ordered by CultureId.
+;with Missing as
+(
+    select e.ExtendedCultureId,
+           c.CultureId as MissingCultureId
+    from CK.tExtendedCulture e
+    cross join CK.tCulture c
+    where e.ExtendedCultureId <> 0
+      and c.CultureId <> 0
+      and not exists (
+          select 1 from CK.tCultureFallback f
+          where f.CultureId = e.ExtendedCultureId and f.FallbackCultureId = c.CultureId
+      )
+),
+WithIdx as
+(
+    select m.ExtendedCultureId,
+           m.MissingCultureId,
+           cast(
+               row_number() over (partition by m.ExtendedCultureId order by m.MissingCultureId)
+               + isnull( (select max(Idx) from CK.tCultureFallback where CultureId = m.ExtendedCultureId), -1 )
+               as smallint
+           ) as NewIdx
+    from Missing m
+)
+insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId )
+    select ExtendedCultureId, NewIdx, MissingCultureId from WithIdx;
+
 --[endscript]

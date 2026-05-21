@@ -303,4 +303,52 @@ public class CultureFallbackTests
         var enChain = (await fallbackTable.GetFallbacksAsync( ctx, en.Id )).Select( c => c.CultureId ).ToList();
         enChain.ShouldNotContain( extended.Id );
     }
+
+    [Test]
+    public async Task settle_assigns_every_other_normalized_culture_as_fallback_for_each_seed_culture_Async()
+    {
+        var fallbackTable = SharedEngine.Map.StObjs.Obtain<CultureFallbackTable>()!;
+
+        using var ctx = new SqlStandardCallContext();
+
+        // Seed normalized cultures inserted by CK.CultureTable.Install.1.0.0.sql.
+        // CultureIds are hash-derived from the name and stable. The test asserts the invariant
+        // established by CK.CultureFallbackTable.Settle.1.0.0.sql Step B: every seed's fallback
+        // chain contains every other seed. Seeds are never destroyed nor overwritten by other
+        // tests in this fixture, so the invariant tolerates any NUnit ordering — propagation in
+        // sCultureRegister can only append cultures registered by other tests, never remove seeds.
+        var seedIds = new[]
+        {
+            223899012,   // de
+            -83080978,   // de-be
+            221277614,   // en
+            -1220541402, // en-gb
+            221081011,   // es
+            210333265,   // fr
+            1629338248,  // fr-fr
+            1621867518,  // fr-ca
+            1619966747,  // fr-be
+            227962680,   // it
+            242184007,   // nl
+            -1390313907, // nl-be
+            247296001,   // pt
+            245723161,   // pl
+            252014523,   // uk
+            266826199,   // zh
+            -827532471,  // zh-hant
+            960837017,   // zh-hk
+            1001731353,  // zh-tw
+        };
+
+        foreach( var cid in seedIds )
+        {
+            var chain = (await fallbackTable.GetFallbackIdsAsync( ctx, cid )).ToList();
+
+            chain[0].ShouldBe( cid );
+            foreach( var other in seedIds )
+            {
+                chain.ShouldContain( other );
+            }
+        }
+    }
 }
