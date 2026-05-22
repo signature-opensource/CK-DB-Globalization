@@ -25,42 +25,42 @@ create table CK.tExtendedCulture
 insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( 0,           '',                 null );
 
 -- DE
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  223899012,  'de',               null );
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  -83080978,  'de-be,de',         null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  223893631,  'de',               null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( 2064397289,  'de-be,de',         null );
 
 -- EN
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  221277614,  'en',               null );
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( -1220541402, 'en-gb,en',         null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  221272233,  'en',               null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  926936865,  'en-gb,en',         null );
 
 -- ES
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  221081011,  'es',               null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  221075630,  'es',               null );
 
 -- FR
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  210333265,  'fr',               null );
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( 1629338248,  'fr-fr,fr',         null );
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( 1621867518,  'fr-ca,fr',         null );
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( 1619966747,  'fr-be,fr',         null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  210327884,  'fr',               null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( 1629332867,  'fr-fr,fr',         null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( 1621862137,  'fr-ca,fr',         null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( 1619961366,  'fr-be,fr',         null );
 
 -- IT
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  227962680,  'it',               null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  227957299,  'it',               null );
 
 -- NL
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  242184007,  'nl',               null );
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( -1390313907, 'nl-be,nl',         null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  242178626,  'nl',               null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  757164360,  'nl-be,nl',         null );
 
 -- PT
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  247296001,  'pt',               null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  247290620,  'pt',               null );
 
 -- PL
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  245723161,  'pl',               null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  245717780,  'pl',               null );
 
 -- UK
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  252014523,  'uk',               null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  252009142,  'uk',               null );
 
 -- ZH
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  266826199,  'zh',               null );
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( -827532471,  'zh-hant,zh',       null );
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  960837017,  'zh-hk,zh-hant,zh', null );
-insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( 1001731353,  'zh-tw,zh-hant,zh', null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  266820818,  'zh',               null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( 1319945796,  'zh-hant,zh',       null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  960831636,  'zh-hk,zh-hant,zh', null );
+insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( 1001725972,  'zh-tw,zh-hant,zh', null );
 
 --[endscript]

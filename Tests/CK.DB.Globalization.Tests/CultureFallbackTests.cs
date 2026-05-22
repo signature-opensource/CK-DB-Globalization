@@ -319,25 +319,25 @@ public class CultureFallbackTests
         // sCultureRegister can only append cultures registered by other tests, never remove seeds.
         var seedIds = new[]
         {
-            223899012,   // de
-            -83080978,   // de-be
-            221277614,   // en
-            -1220541402, // en-gb
-            221081011,   // es
-            210333265,   // fr
-            1629338248,  // fr-fr
-            1621867518,  // fr-ca
-            1619966747,  // fr-be
-            227962680,   // it
-            242184007,   // nl
-            -1390313907, // nl-be
-            247296001,   // pt
-            245723161,   // pl
-            252014523,   // uk
-            266826199,   // zh
-            -827532471,  // zh-hant
-            960837017,   // zh-hk
-            1001731353,  // zh-tw
+            223893631,   // de
+            2064397289,  // de-be
+            221272233,   // en
+            926936865,   // en-gb
+            221075630,   // es
+            210327884,   // fr
+            1629332867,  // fr-fr
+            1621862137,  // fr-ca
+            1619961366,  // fr-be
+            227957299,   // it
+            242178626,   // nl
+            757164360,   // nl-be
+            247290620,   // pt
+            245717780,   // pl
+            252009142,   // uk
+            266820818,   // zh
+            1319945796,  // zh-hant
+            960831636,   // zh-hk
+            1001725972,  // zh-tw
         };
 
         foreach( var cid in seedIds )

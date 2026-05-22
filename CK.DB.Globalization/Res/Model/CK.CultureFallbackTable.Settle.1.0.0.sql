@@ -9,38 +9,38 @@ insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId )
 
 -- Fallback chain for hierarchical seed cultures (FullName "child,parent" or "child,parent,grandparent").
 -- DE-BE -> DE
-insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( -83080978, 1, 223899012 );
+insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 2064397289, 1, 223893631 );
 
 -- EN-GB -> EN
-insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( -1220541402, 1, 221277614 );
+insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 926936865, 1, 221272233 );
 
 -- FR-FR -> FR
-insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 1629338248, 1, 210333265 );
+insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 1629332867, 1, 210327884 );
 
 -- FR-CA -> FR
-insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 1621867518, 1, 210333265 );
+insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 1621862137, 1, 210327884 );
 
 -- FR-BE -> FR
-insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 1619966747, 1, 210333265 );
+insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 1619961366, 1, 210327884 );
 
 -- NL-BE -> NL
-insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( -1390313907, 1, 242184007 );
+insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 757164360, 1, 242178626 );
 
 -- ZH-HANT -> ZH
-insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( -827532471, 1, 266826199 );
+insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 1319945796, 1, 266820818 );
 
 -- ZH-HK -> ZH-HANT -> ZH
-insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 960837017, 1, -827532471 );
-insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 960837017, 2, 266826199 );
+insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 960831636, 1, 1319945796 );
+insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 960831636, 2, 266820818 );
 
 -- ZH-TW -> ZH-HANT -> ZH
-insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 1001731353, 1, -827532471 );
-insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 1001731353, 2, 266826199 );
+insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 1001725972, 1, 1319945796 );
+insert into CK.tCultureFallback( CultureId, Idx, FallbackCultureId ) values( 1001725972, 2, 266820818 );
 
 -- Finalize chains so they match what sCultureRegister produces dynamically: for every
 -- non-zero ExtendedCulture, append English first (if missing), then every other non-zero
 -- normalized Culture not already in the chain (ordered by CultureId for determinism).
-declare @EnId int = 221277614; -- 'en'
+declare @EnId int = 221272233; -- 'en'
 
 -- Step A: append English at the next available Idx for every chain missing it.
 ;with NextIdx as
