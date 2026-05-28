@@ -63,6 +63,16 @@ insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId )
 insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  960831636,  'zh-hk,zh-hant,zh', null );
 insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( 1001725972,  'zh-tw,zh-hant,zh', null );
 
+-- PK_CK_LCID est référencée par 4 FKs externes au scope du bazookage :
+-- FK_CK_MCResHtml_LCID (sur tMCResHtml.LCID)
+-- FK_CK_MCResString_LCID (sur tMCResString.LCID)
+-- FK_CK_MCResText_LCID (sur tMCResText.LCID)
+-- FK_tWorkspaceInvitation_LCID (sur tWorkspaceInvitation.LCID)
+-- 
+-- SQL Server refuse de drop une PK qui est encore référencée.
+--Pour pouvoir drop PK_CK_LCID, il faudrait d'abord drop ces 4 FKs. Mais ces FKs ne sont pas dans rec (elles pointent vers tLCID.LCID, pas vers tXLCID.XLCID), donc le script n'en sait rien.
+ alter table CK.tLCID drop constraint FK_CK_LCID_XLCID;
+
 -- BAZOOKA: legacy XLCID -> ExtendedCultureId remapping for the XLCID identifiers.
 -- DE
 exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','7','223893631',0;
@@ -110,6 +120,6 @@ exec CKCore.sColumnBazookation
     'CK',
     'tExtendedCulture',
     'ExtendedCultureId',
-    'FK_CK_{SOURCETABLE}_ExtendedCultureId foreign key (ExtendedCultureId) references CK.tExtendedCulture(CultureId)'
+    'FK_CK_{SOURCETABLE}_ExtendedCultureId foreign key (ExtendedCultureId) references CK.tExtendedCulture(ExtendedCultureId)'
 
 --[endscript]
