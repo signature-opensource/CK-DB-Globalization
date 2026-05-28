@@ -63,4 +63,53 @@ insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId )
 insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values(  960831636,  'zh-hk,zh-hant,zh', null );
 insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId ) values( 1001725972,  'zh-tw,zh-hant,zh', null );
 
+-- BAZOOKA: legacy XLCID -> ExtendedCultureId remapping for the XLCID identifiers.
+-- DE
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','7','223893631',0;
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','4096','2064397289',0;
+
+-- EN
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','9','221272233',0;
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','2057','926936865',0;
+
+-- ES
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','10','221075630',0;
+
+-- FR
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','12','210327884',0;
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','1036','1629332867',0;
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','3084','1621862137',0;
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','2060','1619961366',0;
+
+-- IT
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','16','227957299',0;
+
+-- NL
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','19','242178626',0;
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','2067','757164360',0;
+
+-- PL
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','21','245717780',0;
+
+-- PT
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','22','247290620',0;
+
+-- UK
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','34','252009142',0;
+
+-- ZH
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','30724','266820818',0;
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','31748','1319945796',0;
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','3076','960831636',0;
+exec CKCore.sRefBazookation 'CK','tXLCID','XLCID','1028','1001725972',0;
+
+exec CKCore.sColumnBazookation
+    'CK',
+    'tXLCID',
+    'XLCID',
+    'CK',
+    'tExtendedCulture',
+    'ExtendedCultureId',
+    'FK_CK_{SOURCETABLE}_ExtendedCultureId foreign key (ExtendedCultureId) references CK.tExtendedCulture(CultureId)'
+
 --[endscript]
