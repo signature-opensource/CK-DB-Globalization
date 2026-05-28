@@ -71,7 +71,16 @@ insert into CK.tExtendedCulture( ExtendedCultureId, FullName, PrimaryCultureId )
 -- 
 -- SQL Server refuse de drop une PK qui est encore référencée.
 --Pour pouvoir drop PK_CK_LCID, il faudrait d'abord drop ces 4 FKs. Mais ces FKs ne sont pas dans rec (elles pointent vers tLCID.LCID, pas vers tXLCID.XLCID), donc le script n'en sait rien.
- alter table CK.tLCID drop constraint FK_CK_LCID_XLCID;
+
+if exists (
+    select 1
+    from sys.foreign_keys
+    where name             = 'FK_CK_LCID_XLCID'
+      and parent_object_id = OBJECT_ID('CK.tLCID')
+)
+begin
+    alter table CK.tLCID drop constraint FK_CK_LCID_XLCID;
+end
 
 -- BAZOOKA: legacy XLCID -> ExtendedCultureId remapping for the XLCID identifiers.
 -- DE
