@@ -9,7 +9,6 @@
   <ItemGroup>
      <PackageReference Include="CK.Cris.Engine" Version="0.43.1" />
     <PackageReference Include="CK.Poco.Exc.Json.Engine" Version="33.0.1" />
-    <PackageReference Include="CK.TypeScript.Engine" Version="0.31.2" />
 
     <PackageReference Include="CK.SqlServer.Setup.Engine" Version="33.0.1" />
     <PackageReference Include="CK.DB.Tests.NUnit" Version="33.0.1" />
