@@ -114,8 +114,7 @@ public class CultureFallbackTests
 
         await cultureTable.RegisterAsync( ctx, hy );
 
-        Assert.ThrowsAsync<SqlDetailedException>( async () =>
-            await fallbackTable.SetFallbacksAsync( ctx, hy.Id, new[] { en.Id, hy.Id } ) );
+        await Should.ThrowAsync<SqlDetailedException>( () => fallbackTable.SetFallbacksAsync( ctx, hy.Id, [en.Id, hy.Id] ) );
     }
 
     [Test]
@@ -129,8 +128,7 @@ public class CultureFallbackTests
 
         await cultureTable.RegisterAsync( ctx, am );
 
-        Assert.ThrowsAsync<SqlDetailedException>( async () =>
-            await fallbackTable.SetFallbacksAsync( ctx, am.Id, new[] { am.Id, 999_999_999 } ) );
+        await Should.ThrowAsync<SqlDetailedException>( () => fallbackTable.SetFallbacksAsync( ctx, am.Id, [am.Id, 999_999_999] ) );
     }
 
     [Test]

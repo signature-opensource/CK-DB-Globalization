@@ -108,7 +108,7 @@ public class CultureTests
         using var ctx = new SqlStandardCallContext();
         var en = NormalizedCultureInfo.EnsureNormalizedCultureInfo( "en" );
 
-        Assert.ThrowsAsync<SqlDetailedException>( async () => await cultureTable.DestroyAsync( ctx, en.Id ) );
+        await Should.ThrowAsync<SqlDetailedException>( () => cultureTable.DestroyAsync( ctx, en.Id ) );
     }
 
     [Test]
@@ -118,7 +118,7 @@ public class CultureTests
 
         using var ctx = new SqlStandardCallContext();
 
-        Assert.ThrowsAsync<SqlDetailedException> ( async () => await cultureTable.DestroyAsync( ctx, 0 ) );
+        await Should.ThrowAsync<SqlDetailedException> ( () => cultureTable.DestroyAsync( ctx, 0 ) );
     }
 
     [Test]
@@ -128,7 +128,7 @@ public class CultureTests
 
         using var ctx = new SqlStandardCallContext();
 
-        Assert.ThrowsAsync<SqlDetailedException>( async () => await cultureTable.DestroyAsync( ctx, -999 ) );
+        await Should.ThrowAsync<SqlDetailedException>( () => cultureTable.DestroyAsync( ctx, -999 ) );
     }
 
     [Test]
