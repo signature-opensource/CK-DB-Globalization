@@ -12,9 +12,9 @@
 
 
   <ItemGroup>
-    <PackageReference Include="CK.Globalization" Version="8.0.0-0.cris-auth" />
-    <PackageReference Include="CK.SqlServer.Dapper" Version="18.0.0-0.cris-auth.0.ci.12" />
-    <PackageReference Include="CK.SqlServer.Setup.Model" Version="36.0.0-0.cris-auth.0.ci.27" />
+    <PackageReference Include="CK.Globalization" Version="8.0.0-0.cris-auth.0.ci.11" />
+    <PackageReference Include="CK.SqlServer.Dapper" Version="18.0.0-0.cris-auth.0.ci.13" />
+    <PackageReference Include="CK.SqlServer.Setup.Model" Version="36.0.0-0.cris-auth.0.ci.28" />
   </ItemGroup>
 
   <ItemGroup>
