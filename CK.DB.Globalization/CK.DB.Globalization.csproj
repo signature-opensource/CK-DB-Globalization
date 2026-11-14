@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="CK.Globalization" Version="8.0.0-0.cris-auth.1.ci.18" />
     <PackageReference Include="CK.SqlServer.Dapper" Version="18.0.0-0.uc.0.ci.35" />
-    <PackageReference Include="CK.SqlServer.Setup.Model" Version="36.0.0-0.uc.0.ci.67" />
+    <PackageReference Include="CK.SqlServer.Setup.Model" Version="36.0.0-0.uc.0.ci.68" />
   </ItemGroup>
 
   <ItemGroup>
