@@ -13,8 +13,8 @@
 
   <ItemGroup>
     <PackageReference Include="CK.Globalization" Version="8.0.0-0.uc.4.ci.46" />
-    <PackageReference Include="CK.SqlServer.Dapper" Version="18.0.0-0.uc.4.ci.94" />
-    <PackageReference Include="CK.SqlServer.Setup.Model" Version="37.0.0-0.uc.4.ci.76" />
+    <PackageReference Include="CK.SqlServer.Dapper" Version="18.0.0-0.uc.4.ci.96" />
+    <PackageReference Include="CK.SqlServer.Setup.Model" Version="37.0.0-0.uc.4.ci.77" />
   </ItemGroup>
 
   <ItemGroup>
